@@ -1,21 +1,21 @@
 # 🎵 VinylCat
 
 VinylCat is a self-hosted web application for cataloguing vinyl record collections.
-It supports Discogs integration, image/barcode recognition, and full manual entry,
-making it usable both online and completely offline.
+It combines Discogs integration, image & barcode recognition, and full manual entry.
+It supports both SQLite and PostgreSQL depending on deployment method.
 
 ---
 
 ## ✨ Features
 
 ### 📁 Collections
-- Users own one or more collections
+- Each user owns one or more collections
 - A user always has **at least one collection**
 - Deleting a collection deletes all contained records
 - Records belong to exactly one collection
 
 ### 💿 Records
-- Add records via Discogs search or manual entry
+- Add records via Discogs or Manual entry
 - Manual mode supports:
   - Artist (required)
   - Title (required)
@@ -23,34 +23,45 @@ making it usable both online and completely offline.
   - Barcode (UPC/EAN)
   - Notes
   - Structured tracklist editor (title + duration)
-- Full edit support after creation
+- Full editing after creation
 
 ### 📷 Image & Barcode Recognition
-- Upload front/back cover images
-- OCR & barcode recognition detects:
-  - Artist
-  - Title
-  - Year
-  - Barcode
+- Upload cover images (front/back)
+- OCR & barcode recognition extracts:
+  - Artist, Title, Year, Barcode
 - Works in both Discogs and Manual modes
 
 ### 👤 Accounts & Security
-- User registration with email activation
+- Registration with email activation
 - Account must be activated before login
-- Per-user Discogs API tokens
+- Per-user Discogs tokens
+- Strong ownership isolation
 
 ### 🎨 UI / UX
-- Bootstrap-based UI
-- Lumen Light and Dark themes
-- User preferences saved per account
+- Bootstrap UI
+- Lumen Light & Dark themes
+- Preferences saved per user
 
 ---
 
 ## 🧱 Technology Stack
 - Backend: FastAPI (Python 3.11)
 - Frontend: Jinja2 + Bootstrap
-- Database: SQLite (default)
+- ORM: SQLAlchemy
+- Databases:
+  - SQLite (local development)
+  - PostgreSQL (Docker / production)
 - Deployment: Docker / Docker Compose
+
+---
+
+## 🗄️ Database Overview
+
+| Environment | Database |
+|------------|----------|
+| Local dev  | SQLite |
+| Docker Compose | PostgreSQL |
+| Production | PostgreSQL (recommended) |
 
 ---
 
@@ -72,30 +83,10 @@ cd vinylcat
 cp .env.example .env
 ```
 
-Edit `.env` with your settings.
-
 ### Run with Docker
 ```bash
 docker compose up -d --build
 ```
-
-Access at: http://localhost:8080
-
----
-
-## 👤 Usage Flow
-1. Register account
-2. Activate via email
-3. Login
-4. (Optional) Add Discogs token
-5. Add records
-6. Manage collections
-
----
-
-## 🔒 Ownership Rules
-- Users can only access their own data
-- Collections cannot be empty (auto-created)
 
 ---
 
