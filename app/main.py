@@ -601,6 +601,26 @@ def collections_create(request: Request, name: str = Form(...), db: Session = De
     db.add(c); db.commit(); db.refresh(c)
     set_active_collection(request, c.id)
     return RedirectResponse("/collections", status_code=303)
+    
+@app.post("/collections/{collection_id}/rename")
+def collections_rename(collection_id: int, request: Request, name: str = Form(...), db: Session = Depends(db_dep)):
+    user = require_user(request, db)
+    c, role = can_access_collection(db, user, collection_id)
+
+    # Rename is restricted to the owner (shared editors/viewers can’t rename).
+    if role != "owner":
+        raise HTTPException(status_code=403)
+
+    new_name = (name or "").strip() or "Untitled"
+
+    # Prevent absurdly long values (DB column is 200 chars).
+    if len(new_name) > 200:
+        new_name = new_name[:200].rstrip()
+
+    c.name = new_name
+    db.commit()
+    return RedirectResponse("/collections", status_code=303)
+
 
 @app.post("/collections/select")
 def collections_select(request: Request, collection_id: int = Form(...), db: Session = Depends(db_dep)):
