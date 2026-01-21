@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: vinyl
+      POSTGRES_USER: vinyl
+      POSTGRES_PASSWORD: vinyl
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  adminer:
+    image: adminer:4
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8081:8080"
+
+  ocr:
+    build:
+      context: ./ocr
+    restart: unless-stopped
+    ports:
+      - "8090:8090"
+
+  app:
+    build:
+      context: .
+    environment:
+      APP_NAME: "VinylCat"
+      DATABASE_URL: "postgresql+psycopg://vinyl:vinyl@db:5432/vinyl"
+      SECRET_KEY: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET"
+      DISCOGS_TOKEN: "${DISCOGS_TOKEN}"
+      UPLOAD_DIR: "/data/uploads"
+      OCR_SERVICE_URL: "http://ocr:8090"
+      PUBLIC_BASE_URL: "${PUBLIC_BASE_URL}"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_USERNAME: "${SMTP_USERNAME}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      SMTP_FROM: "${SMTP_FROM}"
+      SMTP_USE_TLS: "${SMTP_USE_TLS}"
+      SMTP_USE_SSL: "${SMTP_USE_SSL}"
+    volumes:
+      - uploads:/data/uploads
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - ocr
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  uploads:
