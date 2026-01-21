@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ app_name }}{% if title %} · {{ title }}{% endif %}</title>
+
+  <!-- Bootswatch theme (swapped by JS) -->
+  <link id="theme-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/lumen/bootstrap.min.css">
+  <link id="theme-extra-css" rel="stylesheet" href="">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-semibold" href="/">{{ app_name }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        {% if user %}
+        <li class="nav-item"><a class="nav-link" href="/">Records</a></li>
+        <li class="nav-item"><a class="nav-link" href="/collections">Collections</a></li>
+        <li class="nav-item"><a class="nav-link" href="/account">Account</a></li>
+        {% endif %}
+      </ul>
+      <div class="d-flex align-items-center gap-2">
+        
+        <div class="form-check form-switch m-0 d-flex align-items-center gap-2" title="Toggle cover thumbnails">
+          <input class="form-check-input" type="checkbox" role="switch" id="toggle-covers">
+          <label class="form-check-label small text-secondary" for="toggle-covers">Covers</label>
+        </div>
+        <div class="form-check form-switch m-0 d-flex align-items-center gap-2" title="Improve text contrast for some themes">
+          <input class="form-check-input" type="checkbox" role="switch" id="toggle-contrast">
+          <label class="form-check-label small text-secondary" for="toggle-contrast">Contrast</label>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Theme</button>
+          <ul class="dropdown-menu dropdown-menu-end" style="min-width: 14rem;">
+            <li><h6 class="dropdown-header">Dark</h6></li>
+            <li><a class="dropdown-item theme-item" data-theme="darkly" href="#">Darkly</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="cyborg" href="#">Cyborg</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="slate" href="#">Slate</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="superhero" href="#">Superhero</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="vapor" href="#">Vapor</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="lumen-dark" href="#">Lumen (Dark)</a></li>
+            <li><hr class="dropdown-divider"/></li>
+            <li><h6 class="dropdown-header">Light</h6></li>
+            <li><a class="dropdown-item theme-item" data-theme="flatly" href="#">Flatly</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="lumen" href="#">Lumen</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="minty" href="#">Minty</a></li>
+            <li><a class="dropdown-item theme-item" data-theme="sandstone" href="#">Sandstone</a></li>
+          </ul>
+        </div>
+
+        {% if user %}
+          <span class="text-secondary small d-none d-md-inline">Signed in as <span class="text-body">{{ user.email }}</span></span>
+          <a class="btn btn-outline-secondary btn-sm" href="/logout">Logout</a>
+        {% else %}
+          <a class="btn btn-outline-secondary btn-sm" href="/login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-4">
+  {% if info %}
+    <div class="alert alert-info">{{ info }}</div>
+  {% endif %}
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/theme.js"></script>
+<script src="/static/js/ui_prefs.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

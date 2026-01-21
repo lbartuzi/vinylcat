@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <div>
+    <h1 class="h4 mb-0">Pick the correct release</h1>
+    <div class="text-secondary small">Results from Discogs. If none match, go back and adjust your search.</div>
+  </div>
+  <a class="btn btn-outline-secondary" href="/records/add">Back</a>
+</div>
+
+{% if results|length == 0 %}
+  <div class="alert alert-warning">No matches found.</div>
+{% else %}
+  <div class="list-group shadow-sm">
+    {% for r in results %}
+      <form class="list-group-item list-group-item-action d-flex gap-3 align-items-start" method="post" action="/records/add_from_discogs">
+        <input type="hidden" name="release_id" value="{{ r.id }}">
+        <img src="{{ r.cover_image }}" alt="" class="rounded" style="width:72px;height:72px;object-fit:cover;">
+        <div class="flex-grow-1">
+          <div class="fw-semibold">{{ r.title }}</div>
+          <div class="small text-secondary">
+            {% if r.year %}{{ r.year }} · {% endif %}
+            {% if r.label %}{{ r.label|join(", ") }}{% endif %}
+            {% if r.catno %} · {{ r.catno|join(", ") }}{% endif %}
+            {% if r.country %} · {{ r.country }}{% endif %}
+          </div>
+          <div class="small text-secondary">
+            {% if r.format %}{{ r.format|join(", ") }}{% endif %}
+          </div>
+          <div class="mt-2">
+            <textarea class="form-control form-control-sm" name="notes" rows="2" placeholder="Notes (condition, where stored, etc.) (optional)"></textarea>
+          </div>
+        </div>
+        <div class="ms-auto">
+          <button class="btn btn-primary btn-sm" type="submit">Add</button>
+        </div>
+      </form>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

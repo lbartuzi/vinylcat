@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+  <div class="text-truncate">
+    <div class="text-secondary small">{{ collection.name }}</div>
+    <h1 class="h4 mb-0 text-truncate">{{ record.artist or "Unknown artist" }} — {{ record.title or "Untitled" }}</h1>
+    <div class="text-secondary small">
+      {% if record.year %}{{ record.year }}{% endif %}
+      {% if record.label %} · {{ record.label }}{% endif %}
+      {% if record.catno %} · {{ record.catno }}{% endif %}
+      {% if record.barcode %} · {{ record.barcode }}{% endif %}
+      {% if record.country %} · {{ record.country }}{% endif %}
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="/">Back</a>
+    {% if role != "viewer" %}
+      <a class="btn btn-outline-primary" href="/records/{{ record.id }}/edit">Edit</a>
+      <form method="post" action="/records/{{ record.id }}/delete" onsubmit="return confirm('Delete this record?');">
+        <button class="btn btn-outline-danger" type="submit">Delete</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-12 col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">Photos</h2>
+        {% if photos|length == 0 %}
+          <div class="text-secondary">No photos yet.</div>
+        {% else %}
+          <div class="row g-2">
+            {% for p in photos %}
+              <div class="col-6 col-md-4">
+                {% if p.kind == "upload" %}
+                  <a href="/uploads/{{ p.filename }}" target="_blank" class="d-block">
+                    <img class="img-fluid rounded shadow-sm" src="/uploads/{{ p.filename }}" alt="">
+                  </a>
+                {% else %}
+                  <a href="{{ p.url }}" target="_blank" class="d-block">
+                    <img class="img-fluid rounded shadow-sm" src="{{ p.url }}" alt="">
+                  </a>
+                {% endif %}
+                <div class="small text-secondary mt-1">{{ p.kind }}{% if p.label %} · {{ p.label }}{% endif %}</div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if role != "viewer" %}
+          <hr/>
+          <h3 class="h6">Upload your own photo</h3>
+          <form class="row g-2 align-items-end" method="post" action="/records/{{ record.id }}/upload_photo" enctype="multipart/form-data">
+            <div class="col-12 col-md-4">
+              <label class="form-label">Label</label>
+              <select class="form-select" name="label">
+                <option value="front">Front</option>
+                <option value="back">Back</option>
+                <option value="other" selected>Other</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Photo</label>
+              <input class="form-control" type="file" name="photo" accept="image/*" required>
+            </div>
+            <div class="col-12 col-md-2">
+              <button class="btn btn-primary w-100" type="submit">Upload</button>
+            </div>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">Tracklist</h2>
+        {% if tracklist|length == 0 %}
+          <div class="text-secondary">No tracklist available.</div>
+        {% else %}
+          <ol class="mb-0">
+            {% for t in tracklist %}
+              <li class="mb-1">
+                <span class="fw-semibold">{{ t.title }}</span>
+                {% if t.duration %}<span class="text-secondary"> ({{ t.duration }})</span>{% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if record.notes %}
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h2 class="h6">Notes</h2>
+        <div style="white-space: pre-wrap;">{{ record.notes }}</div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h1 class="h4 mb-0">Collections</h1>
+</div>
+
+<div class="row g-3">
+  <div class="col-12 col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">Your accessible collections</h2>
+        {% if collections|length == 0 %}
+          <div class="text-secondary">No collections yet.</div>
+        {% else %}
+          <div class="list-group">
+            {% for c in collections %}
+              <div class="list-group-item d-flex align-items-center justify-content-between gap-2">
+                <div class="text-truncate">
+                  <div class="fw-semibold">{{ c.name }}</div>
+                  <div class="small text-secondary">ID {{ c.id }}</div>
+                </div>
+                <div class="d-flex gap-2">
+                  <form method="post" action="/collections/select">
+                    <input type="hidden" name="collection_id" value="{{ c.id }}">
+                    <button class="btn btn-sm {% if c.id == active_id %}btn-primary{% else %}btn-outline-secondary{% endif %}">Select</button>
+                  </form>
+                  {% if c.owner_id == user.id %}
+                    <a class="btn btn-sm btn-outline-secondary" href="/collections/{{ c.id }}/share">Share</a>
+                    <form method="post" action="/collections/{{ c.id }}/delete">
+                      <button class="btn btn-sm btn-outline-danger" type="submit"
+                              onclick="return confirm('Delete this collection and ALL records in it?');">Delete</button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h6">Create a new collection</h2>
+        <form class="vstack gap-2" method="post" action="/collections/create">
+          <input class="form-control" name="name" placeholder="e.g. Family Vinyl, Shop Inventory..." required>
+          <button class="btn btn-primary" type="submit">Create</button>
+        </form>
+        <div class="small text-secondary mt-3">
+          Tip: To share a collection, the other person must register first (by email).
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
