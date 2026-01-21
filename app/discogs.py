@@ -12,7 +12,15 @@ def _headers(token: str | None = None) -> dict[str,str]:
         h["Authorization"] = f"Discogs token={tok}"
     return h
 
-async def search(barcode: str | None = None, artist: str | None = None, title: str | None = None, year: int | None = None, per_page: int = 10, token: str | None = None) -> list[dict[str,Any]]:
+async def search(
+    barcode: str | None = None,
+    artist: str | None = None,
+    title: str | None = None,
+    year: int | None = None,
+    country: str | None = None,
+    per_page: int = 50,
+    token: str | None = None,
+) -> list[dict[str,Any]]:
     params: dict[str, Any] = {"type": "release", "per_page": per_page}
     if barcode:
         params["barcode"] = barcode
@@ -22,6 +30,8 @@ async def search(barcode: str | None = None, artist: str | None = None, title: s
         params["release_title"] = title
     if year:
         params["year"] = year
+    if country and country.strip():
+        params["country"] = country.strip()
     async with httpx.AsyncClient(timeout=20) as client:
         r = await client.get(f"{BASE}/database/search", params=params, headers=_headers(token))
         r.raise_for_status()
