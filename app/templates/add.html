@@ -56,13 +56,17 @@
           <h2 class="h6">2) Search Discogs</h2>
           <form class="vstack gap-2" method="post" action="/records/search" id="searchForm">
             <div class="row g-2">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label class="form-label">Barcode</label>
                 <input class="form-control" name="barcode" id="barcode" placeholder="UPC/EAN">
               </div>
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label class="form-label">Year</label>
                 <input class="form-control" name="year" id="year" placeholder="e.g. 1998">
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label">Country</label>
+                <input class="form-control" name="country" id="country" placeholder="e.g. Netherlands / US">
               </div>
             </div>
             <div class="row g-2">
