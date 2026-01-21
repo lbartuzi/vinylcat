@@ -19,20 +19,58 @@
                   <div class="fw-semibold">{{ c.name }}</div>
                   <div class="small text-secondary">ID {{ c.id }}</div>
                 </div>
-                <div class="d-flex gap-2">
+            
+                <div class="d-flex gap-2 flex-wrap justify-content-end">
                   <form method="post" action="/collections/select">
                     <input type="hidden" name="collection_id" value="{{ c.id }}">
-                    <button class="btn btn-sm {% if c.id == active_id %}btn-primary{% else %}btn-outline-secondary{% endif %}">Select</button>
+                    <button class="btn btn-sm {% if c.id == active_id %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                      Select
+                    </button>
                   </form>
+            
                   {% if c.owner_id == user.id %}
                     <a class="btn btn-sm btn-outline-secondary" href="/collections/{{ c.id }}/share">Share</a>
+            
+                    <button class="btn btn-sm btn-outline-secondary" type="button"
+                            data-bs-toggle="modal" data-bs-target="#renameCollection{{ c.id }}">
+                      Rename
+                    </button>
+            
                     <form method="post" action="/collections/{{ c.id }}/delete">
                       <button class="btn btn-sm btn-outline-danger" type="submit"
-                              onclick="return confirm('Delete this collection and ALL records in it?');">Delete</button>
+                              onclick="return confirm('Delete this collection and ALL records in it?');">
+                        Delete
+                      </button>
                     </form>
                   {% endif %}
                 </div>
               </div>
+            
+              {% if c.owner_id == user.id %}
+                <div class="modal fade" id="renameCollection{{ c.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Rename collection</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+            
+                      <form method="post" action="/collections/{{ c.id }}/rename">
+                        <div class="modal-body">
+                          <label class="form-label">Collection name</label>
+                          <input class="form-control" name="name" value="{{ c.name }}" maxlength="200" required>
+                          <div class="form-text">This only changes the name, not the records inside.</div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                      </form>
+            
+                    </div>
+                  </div>
+                </div>
+              {% endif %}
             {% endfor %}
           </div>
         {% endif %}
