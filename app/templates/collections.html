@@ -9,35 +9,42 @@
     <div class="card shadow-sm">
       <div class="card-body">
         <h2 class="h6">Your accessible collections</h2>
+
         {% if collections|length == 0 %}
           <div class="text-secondary">No collections yet.</div>
         {% else %}
           <div class="list-group">
             {% for c in collections %}
-              <div class="list-group-item d-flex align-items-center justify-content-between gap-2">
+              <div class="list-group-item d-flex align-items-center justify-content-between gap-2 collection-item
+                          {% if c.id == active_id %}active{% endif %}"
+                   role="button"
+                   tabindex="0"
+                   data-submit-form="select-collection-{{ c.id }}">
+
                 <div class="text-truncate">
                   <div class="fw-semibold">{{ c.name }}</div>
                   <div class="small text-secondary">ID {{ c.id }}</div>
                 </div>
-            
+
                 <div class="d-flex gap-2 flex-wrap justify-content-end">
-                  <form method="post" action="/collections/select">
+                  <form id="select-collection-{{ c.id }}" method="post" action="/collections/select" class="m-0">
                     <input type="hidden" name="collection_id" value="{{ c.id }}">
-                    <button class="btn btn-sm {% if c.id == active_id %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                    <button class="btn btn-sm {% if c.id == active_id %}btn-primary{% else %}btn-outline-secondary{% endif %} no-row-select"
+                            type="submit">
                       Select
                     </button>
                   </form>
-            
+
                   {% if c.owner_id == user.id %}
-                    <a class="btn btn-sm btn-outline-secondary" href="/collections/{{ c.id }}/share">Share</a>
-            
-                    <button class="btn btn-sm btn-outline-secondary" type="button"
+                    <a class="btn btn-sm btn-outline-secondary no-row-select" href="/collections/{{ c.id }}/share">Share</a>
+
+                    <button class="btn btn-sm btn-outline-secondary no-row-select" type="button"
                             data-bs-toggle="modal" data-bs-target="#renameCollection{{ c.id }}">
                       Rename
                     </button>
-            
-                    <form method="post" action="/collections/{{ c.id }}/delete">
-                      <button class="btn btn-sm btn-outline-danger" type="submit"
+
+                    <form method="post" action="/collections/{{ c.id }}/delete" class="m-0">
+                      <button class="btn btn-sm btn-outline-danger no-row-select" type="submit"
                               onclick="return confirm('Delete this collection and ALL records in it?');">
                         Delete
                       </button>
@@ -45,7 +52,7 @@
                   {% endif %}
                 </div>
               </div>
-            
+
               {% if c.owner_id == user.id %}
                 <div class="modal fade" id="renameCollection{{ c.id }}" tabindex="-1" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered">
@@ -54,7 +61,7 @@
                         <h5 class="modal-title">Rename collection</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
-            
+
                       <form method="post" action="/collections/{{ c.id }}/rename">
                         <div class="modal-body">
                           <label class="form-label">Collection name</label>
@@ -66,13 +73,44 @@
                           <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                       </form>
-            
+
                     </div>
                   </div>
                 </div>
               {% endif %}
             {% endfor %}
           </div>
+
+          <script>
+            // Make the whole collection row clickable to "Select" it,
+            // but do NOT trigger when clicking on buttons/links inside.
+            document.addEventListener("click", (e) => {
+              const row = e.target.closest(".collection-item");
+              if (!row) return;
+
+              // If click came from an element marked as "no-row-select" (or inside one), do nothing.
+              if (e.target.closest(".no-row-select")) return;
+
+              const formId = row.getAttribute("data-submit-form");
+              if (!formId) return;
+
+              const form = document.getElementById(formId);
+              if (form) form.submit();
+            });
+
+            // Keyboard accessibility: Enter/Space selects too.
+            document.addEventListener("keydown", (e) => {
+              if (!(e.key === "Enter" || e.key === " ")) return;
+
+              const row = document.activeElement?.closest?.(".collection-item");
+              if (!row) return;
+
+              e.preventDefault();
+              const formId = row.getAttribute("data-submit-form");
+              const form = document.getElementById(formId);
+              if (form) form.submit();
+            });
+          </script>
         {% endif %}
       </div>
     </div>
@@ -93,4 +131,11 @@
     </div>
   </div>
 </div>
+
+<style>
+  /* Clickable row affordance */
+  .collection-item { cursor: pointer; }
+  .collection-item:hover { background: rgba(0,0,0,.03); }
+  [data-bs-theme="dark"] .collection-item:hover { background: rgba(255,255,255,.06); }
+</style>
 {% endblock %}
