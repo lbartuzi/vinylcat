@@ -2,7 +2,6 @@
 .list-group-item { border-radius: .75rem; }
 .navbar-brand { letter-spacing: .2px; }
 
-
 /* Cover thumbnails (lazy-loaded when Covers toggle is ON) */
 .cover-thumb{
   width: 84px;
@@ -44,3 +43,86 @@ html[data-theme-name="superhero"] .text-secondary,
 html[data-theme-name="superhero"] .text-muted{
   color: rgba(255,255,255,.68);
 }
+
+/* Ensure flex children can actually shrink for ellipsis to work */
+.min-w-0 { min-width: 0 !important; }
+
+/* Multiline tooltip (pure CSS) */
+.vc-tooltip{
+  position: relative;
+}
+
+/* Tooltip box */
+.vc-tooltip:hover::after{
+  content: attr(data-tooltip);
+  position: absolute;
+
+  /* default: open to the right */
+  left: 0;
+  top: 100%;
+  margin-top: 8px;
+
+  z-index: 9999;
+  background: rgba(0,0,0,0.92);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 10px;
+
+  /* multiline + sizing */
+  white-space: pre-wrap;
+  line-height: 1.35;
+
+  /* keep it from overflowing viewport */
+  max-width: min(520px, calc(100vw - 24px));
+  width: max-content;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  pointer-events: none; /* prevent flicker when hovering tooltip itself */
+}
+
+/* Tooltip arrow */
+.vc-tooltip:hover::before{
+  content: "";
+  position: absolute;
+
+  left: 18px;
+  top: 100%;
+  margin-top: 2px;
+
+  border: 6px solid transparent;
+  border-bottom-color: rgba(0,0,0,0.92);
+
+  z-index: 10000;
+  pointer-events: none;
+}
+
+/* --- Prevent tooltip going off-screen on the right edge ---
+   Cards are in .row with bootstrap columns; last column tends to overflow.
+   Flip the tooltip to open to the LEFT for the last column in each row.
+*/
+
+/* lg: 3 columns -> last column is every 3rd */
+@media (min-width: 992px){
+  .row > .col-lg-4:nth-child(3n) .vc-tooltip:hover::after{
+    left: auto;
+    right: 0;
+  }
+  .row > .col-lg-4:nth-child(3n) .vc-tooltip:hover::before{
+    left: auto;
+    right: 18px;
+  }
+}
+
+/* md: 2 columns -> last column is every 2nd */
+@media (min-width: 768px) and (max-width: 991.98px){
+  .row > .col-md-6:nth-child(2n) .vc-tooltip:hover::after{
+    left: auto;
+    right: 0;
+  }
+  .row > .col-md-6:nth-child(2n) .vc-tooltip:hover::before{
+    left: auto;
+    right: 18px;
+  }
+}
+
+/* small: 1 column -> always open right (no flip needed) */
