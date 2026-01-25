@@ -4,20 +4,20 @@
   <div class="col-12 col-md-6 col-lg-4">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h1 class="h4 mb-3">Create account</h1>
+        <h1 class="h4 mb-3">{{ t('auth.create_account') }}</h1>
         <form method="post" action="/register" class="vstack gap-3">
           <div>
-            <label class="form-label">Email</label>
+            <label class="form-label">{{ t('auth.email') }}</label>
             <input class="form-control" type="email" name="email" required autofocus>
           </div>
           <div>
-            <label class="form-label">Password</label>
+            <label class="form-label">{{ t('auth.password') }}</label>
             <input class="form-control" type="password" name="password" required minlength="8">
-            <div class="form-text">Minimum 8 characters.</div>
+            <div class="form-text">{{ t('auth.min_password_hint') }}</div>
           </div>
-          <button class="btn btn-primary w-100" type="submit">Create account</button>
+          <button class="btn btn-primary w-100" type="submit">{{ t('auth.create_account') }}</button>
           <div class="text-center small text-secondary">
-            Already have an account? <a href="/login">Login</a>
+            {{ t('auth.already_have_account') }} <a href="/login">{{ t('auth.login') }}</a>
           </div>
         </form>
       </div>

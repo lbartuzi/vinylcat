@@ -3,13 +3,13 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
   <div>
     <div class="text-secondary small">{{ collection.name }}</div>
-    <h1 class="h4 mb-0">Edit record</h1>
+    <h1 class="h4 mb-0">{{ t("Edit record") }}</h1>
     <div class="text-secondary small">
-      {% if record.discogs_release_id %}Discogs release ID: {{ record.discogs_release_id }}{% else %}Manual record{% endif %}
+      {% if record.discogs_release_id %}{{ t("Discogs release ID") }}: {{ record.discogs_release_id }}{% else %}{{ t("Manual record") }}{% endif %}
     </div>
   </div>
   <div class="d-flex gap-2">
-    <a class="btn btn-outline-secondary" href="/records/{{ record.id }}">Cancel</a>
+    <a class="btn btn-outline-secondary" href="/records/{{ record.id }}">{{ t("Cancel") }}</a>
   </div>
 </div>
 
@@ -17,36 +17,36 @@
   <div class="card-body">
     <form method="post" action="/records/{{ record.id }}/update" class="row g-3">
       <div class="col-12 col-md-6">
-        <label class="form-label">Artist</label>
-        <input class="form-control" name="artist" value="{{ record.artist or '' }}" placeholder="Artist">
+        <label class="form-label">{{ t("Artist") }}</label>
+        <input class="form-control" name="artist" value="{{ record.artist or '' }}" placeholder="{{ t("Artist") }}">
       </div>
       <div class="col-12 col-md-6">
-        <label class="form-label">Title</label>
-        <input class="form-control" name="title" value="{{ record.title or '' }}" placeholder="Title">
+        <label class="form-label">{{ t("Title") }}</label>
+        <input class="form-control" name="title" value="{{ record.title or '' }}" placeholder="{{ t("Title") }}">
       </div>
       <div class="col-12 col-md-3">
-        <label class="form-label">Year</label>
-        <input class="form-control" name="year" value="{{ record.year or '' }}" placeholder="e.g. 1999">
+        <label class="form-label">{{ t("Year") }}</label>
+        <input class="form-control" name="year" value="{{ record.year or '' }}" placeholder="{{ t("e.g. 1999") }}">
       </div>
       <div class="col-12 col-md-3">
-        <label class="form-label">Barcode</label>
-        <input class="form-control" name="barcode" value="{{ record.barcode or '' }}" placeholder="UPC/EAN">
+        <label class="form-label">{{ t("Barcode") }}</label>
+        <input class="form-control" name="barcode" value="{{ record.barcode or '' }}" placeholder="{{ t("UPC/EAN") }}">
       </div>
 
       <div class="col-12">
-        <label class="form-label">Tracklist</label>
-        <textarea class="form-control" name="tracklist_text" rows="10" placeholder="One track per line. Optional: Title - 3:45">{{ tracklist_text or '' }}</textarea>
-        <div class="form-text">Format: <code>Title</code> or <code>Title - 3:45</code> (duration optional).</div>
+        <label class="form-label">{{ t("Tracklist") }}</label>
+        <textarea class="form-control" name="tracklist_text" rows="10" placeholder="{{ t("One track per line. Optional: Title - 3:45") }}">{{ tracklist_text or '' }}</textarea>
+        <div class="form-text">{{ t("Format") }}: <code>{{ t("Title") }}</code> {{ t("or") }} <code>Title - 3:45</code> {{ t("(duration optional).") }}</div>
       </div>
 
       <div class="col-12">
-        <label class="form-label">Notes</label>
-        <textarea class="form-control" name="notes" rows="4" placeholder="Optional notes">{{ record.notes or '' }}</textarea>
+        <label class="form-label">{{ t("Notes") }}</label>
+        <textarea class="form-control" name="notes" rows="4" placeholder="{{ t("Optional notes") }}">{{ record.notes or '' }}</textarea>
       </div>
 
       <div class="col-12 d-flex justify-content-end gap-2">
-        <a class="btn btn-outline-secondary" href="/records/{{ record.id }}">Cancel</a>
-        <button class="btn btn-primary" type="submit">Save</button>
+        <a class="btn btn-outline-secondary" href="/records/{{ record.id }}">{{ t("Cancel") }}</a>
+        <button class="btn btn-primary" type="submit">{{ t("Save") }}</button>
       </div>
     </form>
   </div>

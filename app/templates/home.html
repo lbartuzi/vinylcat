@@ -2,26 +2,110 @@
 {% block content %}
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
   <div>
-    <div class="text-secondary small">Active collection</div>
+    <div class="text-secondary small">{{ t("Active collection") }}</div>
     <div class="h5 mb-0">{{ active_collection.name }}</div>
-    <div class="text-secondary small">Role: {{ active_role }}</div>
+    <div class="text-secondary small">{{ t("Role") }}: {{ t("role." ~ active_role) }}</div>
   </div>
-  <div class="d-flex gap-2 align-items-center">
-    <form class="d-flex gap-2" method="get" action="/">
-      <input class="form-control" style="min-width: 16rem;" type="search" name="q" placeholder="Search title, artist, label, catno..." value="{{ q }}">
-      <button class="btn btn-outline-secondary" type="submit">Search</button>
+<div class="d-flex gap-2 align-items-center">
+  <!-- Centered, width-capped toolbar -->
+  <div class="flex-grow-1 d-flex justify-content-center">
+    <form class="d-flex flex-wrap gap-2 align-items-center w-100"
+          method="get" action="/"
+          style="max-width: 760px;">
+      <input class="form-control form-control-sm" style="min-width: 16rem;" type="search" name="q"
+             placeholder="{{ t("Search title, artist, label, catno...") }}" value="{{ q }}">
+
+      <select class="form-select form-select-sm" name="sort" style="width: 12rem;">
+        <option value="added"   {% if sort == "added" %}selected{% endif %}>{{ t("Added") }}</option>
+        <option value="artist"  {% if sort == "artist" %}selected{% endif %}>{{ t("Artist") }}</option>
+        <option value="title"   {% if sort == "title" %}selected{% endif %}>{{ t("Title") }}</option>
+        <option value="year"    {% if sort == "year" %}selected{% endif %}>{{ t("Year") }}</option>
+        <option value="label"   {% if sort == "label" %}selected{% endif %}>{{ t("Label") }}</option>
+        <option value="catno"   {% if sort == "catno" %}selected{% endif %}>{{ t("Catalog #") }}</option>
+        <option value="country" {% if sort == "country" %}selected{% endif %}>{{ t("Country") }}</option>
+      </select>
+
+      <select class="form-select form-select-sm" name="dir" style="width: 10rem;">
+        <option value="asc"  {% if dir == "asc" %}selected{% endif %}>{{ t("Ascending") }}</option>
+        <option value="desc" {% if dir == "desc" %}selected{% endif %}>{{ t("Descending") }}</option>
+      </select>
+
+      <select class="form-select form-select-sm" name="per_page" style="width: 8rem;">
+        <option value="20"  {% if per_page == "20" %}selected{% endif %}>20</option>
+        <option value="50"  {% if per_page == "50" %}selected{% endif %}>50</option>
+        <option value="100" {% if per_page == "100" %}selected{% endif %}>100</option>
+        <option value="all" {% if per_page == "all" %}selected{% endif %}>{{ t("All") }}</option>
+      </select>
+
+      <input type="hidden" name="page" value="1">
+
+      <button class="btn btn-outline-secondary btn-sm" type="submit">{{ t("Apply") }}</button>
     </form>
-    {% if active_role != "viewer" %}
-      <a class="btn btn-primary" href="/records/add">Add record</a>
-    {% endif %}
   </div>
+
+  {% if active_role != "viewer" %}
+    <a class="btn btn-primary btn-sm" href="/records/add" style="width: 10rem;">{{ t("Add record") }}</a>
+  {% endif %}
 </div>
 
+
+<!--
+  <div class="d-flex gap-2 align-items-center">
+    <form class="d-flex flex-wrap gap-2 align-items-center" method="get" action="/">
+      <input class="form-control" style="min-width: 16rem;" style="max-width: 760px;" type="search" name="q"
+             placeholder="{{ t("Search title, artist, label, catno...") }}" value="{{ q }}">
+
+      <select class="form-select" name="sort" style="width: 12rem;">
+        <option value="added"   {% if sort == "added" %}selected{% endif %}>{{ t("Added") }}</option>
+        <option value="artist"  {% if sort == "artist" %}selected{% endif %}>{{ t("Artist") }}</option>
+        <option value="title"   {% if sort == "title" %}selected{% endif %}>{{ t("Title") }}</option>
+        <option value="year"    {% if sort == "year" %}selected{% endif %}>{{ t("Year") }}</option>
+        <option value="label"   {% if sort == "label" %}selected{% endif %}>{{ t("Label") }}</option>
+        <option value="catno"   {% if sort == "catno" %}selected{% endif %}>{{ t("Catalog #") }}</option>
+        <option value="country" {% if sort == "country" %}selected{% endif %}>{{ t("Country") }}</option>
+      </select>
+
+      <select class="form-select" name="dir" style="width: 10rem;">
+        <option value="asc"  {% if dir == "asc" %}selected{% endif %}>{{ t("Ascending") }}</option>
+        <option value="desc" {% if dir == "desc" %}selected{% endif %}>{{ t("Descending") }}</option>
+      </select>
+
+      <select class="form-select" name="per_page" style="width: 8rem;">
+        <option value="20"  {% if per_page == "20" %}selected{% endif %}>20</option>
+        <option value="50"  {% if per_page == "50" %}selected{% endif %}>50</option>
+        <option value="100" {% if per_page == "100" %}selected{% endif %}>100</option>
+        <option value="all" {% if per_page == "all" %}selected{% endif %}>{{ t("All") }}</option>
+      </select>
+      <input type="hidden" name="page" value="1">
+
+      <button class="btn btn-outline-secondary" type="submit">{{ t("Apply") }}</button>
+    </form>
+    {% if active_role != "viewer" %}
+      <a class="btn btn-primary" href="/records/add">{{ t("Add record") }}</a>
+    {% endif %}
+  </div>
+-->
+</div>
+
+{% if total > 0 %}
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+    <div class="text-secondary small">{{ t("Showing {from_}-{to_} of {total}", from_=show_from, to_=show_to, total=total) }}</div>
+    {% if total_pages > 1 %}
+      <div class="text-secondary small">{{ t("Page {page} of {pages}", page=page, pages=total_pages) }}</div>
+    {% endif %}
+  </div>
+{% endif %}
+
 {% if records|length == 0 %}
-  <div class="alert alert-info">No records yet. {% if active_role != "viewer" %}Add your first one.{% endif %}</div>
+  <div class="alert alert-info">{{ t("No records yet.") }} {% if active_role != "viewer" %}{{ t("Add your first one.") }}{% endif %}</div>
 {% else %}
   <div class="row g-3">
     {% for r in records %}
+      {# Build tooltip text (multiline). Use &#10; for line breaks inside an attribute. #}
+      {% set tip = (r.artist or t("Unknown artist")) ~ '&#10;' ~ (r.title or t("Untitled")) ~
+                   (('&#10;' ~ r.label) if r.label else '') ~
+                   (('&#10;' ~ r.catno) if r.catno else '') %}
+
       <div class="col-12 col-md-6 col-lg-4">
         <a class="card h-100 text-decoration-none shadow-sm" href="/records/{{ r.id }}">
           <div class="card-body">
@@ -29,32 +113,71 @@
               <div class="cover-thumb">
                 {% set cu = cover_urls.get(r.id) %}
                 {% if cu %}
-                  <img class="cover-img" loading="lazy" data-src="{{ cu }}" alt="cover">
+                  <img class="cover-img" loading="lazy" data-src="{{ cu }}" alt="{{ t("Cover") }}">
                 {% else %}
-                  <div class="cover-placeholder">No cover</div>
+                  <div class="cover-placeholder">{{ t("No cover") }}</div>
                 {% endif %}
               </div>
+<div class="flex-grow-1 min-w-0">
+  <div class="d-flex justify-content-between gap-2">
+    <div class="min-w-0 flex-grow-1">
 
-              <div class="flex-grow-1 min-w-0">
-                <div class="d-flex justify-content-between gap-2">
-                  <div class="text-truncate">
-                    <div class="fw-semibold text-body">{{ r.artist or "Unknown artist" }}</div>
-                    <div class="text-secondary text-truncate">{{ r.title or "Untitled" }}</div>
-                  </div>
-                  <div class="text-end">
-                    {% if r.year %}<div class="badge text-bg-secondary">{{ r.year }}</div>{% endif %}
-                  </div>
-                </div>
-                <div class="mt-2 small text-secondary">
-                  {% if r.label %}{{ r.label }}{% endif %}
-                  {% if r.catno %} · {{ r.catno }}{% endif %}
-                </div>
-              </div>
+      <div class="vc-tooltip" data-tooltip="{{ tip|safe }}">
+        <div class="fw-semibold text-body text-truncate">
+          {{ r.artist or t("Unknown artist") }}
+        </div>
+      </div>
+
+      <div class="vc-tooltip" data-tooltip="{{ tip|safe }}">
+        <div class="text-secondary text-truncate">
+          {{ r.title or t("Untitled") }}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-end flex-shrink-0">
+      {% if r.year %}<div class="badge text-bg-secondary">{{ r.year }}</div>{% endif %}
+    </div>
+  </div>
+
+  <div class="vc-tooltip mt-2" data-tooltip="{{ tip|safe }}">
+    <div class="small text-secondary text-truncate">
+      {% if r.label %}{{ r.label }}{% endif %}
+      {% if r.catno %} · {{ r.catno }}{% endif %}
+    </div>
+  </div>
+</div>
+
+
+
             </div>
           </div>
         </a>
       </div>
     {% endfor %}
   </div>
+
+{% if total_pages > 1 %}
+  <nav aria-label="Pagination" class="mt-3">
+    <ul class="pagination justify-content-center flex-wrap">
+      <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+        <a class="page-link" href="{{ request.url.include_query_params(page=page-1, per_page=per_page) }}">{{ t("Previous") }}</a>
+      </li>
+      {% for p in page_items %}
+        {% if p is none %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% else %}
+          <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ request.url.include_query_params(page=p, per_page=per_page) }}">{{ p }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+      <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+        <a class="page-link" href="{{ request.url.include_query_params(page=page+1, per_page=per_page) }}">{{ t("Next") }}</a>
+      </li>
+    </ul>
+  </nav>
+{% endif %}
 {% endif %}
 {% endblock %}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>VinylCat</title>
+
+  <!-- record -->
+  <circle cx="32" cy="34" r="22" fill="#111"></circle>
+  <circle cx="32" cy="34" r="14" fill="none" stroke="#2a2a2a" stroke-width="3"></circle>
+  <circle cx="32" cy="34" r="3.5" fill="#f4f4f4"></circle>
+
+  <!-- cat ears -->
+  <path d="M18 20 L26 10 L30 22 Z" fill="#111"></path>
+  <path d="M46 20 L38 10 L34 22 Z" fill="#111"></path>
+
+  <!-- small highlight -->
+  <path d="M22 30 A16 16 0 0 1 34 18" fill="none" stroke="#6ee7ff" stroke-width="2" stroke-linecap="round" opacity="0.8"></path>
+</svg>

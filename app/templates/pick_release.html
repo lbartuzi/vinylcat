@@ -2,18 +2,41 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
   <div>
-    <h1 class="h4 mb-0">Pick the correct release</h1>
-    <div class="text-secondary small">Results from Discogs. If none match, go back and adjust your search.</div>
+    <h1 class="h4 mb-0">{{ t("Pick the correct release") }}</h1>
+    <div class="text-secondary small">{{ t("Results from Discogs. If none match, go back and adjust your search.") }}</div>
   </div>
-  <a class="btn btn-outline-secondary" href="/records/add">Back</a>
+  <a class="btn btn-outline-secondary" href="/records/add">{{ t("Back") }}</a>
 </div>
 
+{% if pager %}
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+    <div class="input-group" style="max-width: 520px;">
+      <span class="input-group-text">🔎</span>
+      <input id="resultsFilter" type="text" class="form-control" placeholder="{{ t('Filter results…') }}">
+    </div>
+    <div class="text-secondary small" id="resultsCount"></div>
+  </div>
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <div class="text-secondary small">
+      {{ t("Page {page} of {pages}").format(page=pager.page, pages=pager.pages) }}
+      {% if pager.total %}
+        · {{ t("Showing {from_}-{to_} of {total}").format(from_=pager.from_, to_=pager.to_, total=pager.total) }}
+      {% endif %}
+    </div>
+    <div class="btn-group">
+      <a class="btn btn-outline-secondary {% if not pager.prev_url %}disabled{% endif %}" href="{{ pager.prev_url or '#' }}">{{ t("Previous") }}</a>
+      <a class="btn btn-outline-secondary {% if not pager.next_url %}disabled{% endif %}" href="{{ pager.next_url or '#' }}">{{ t("Next") }}</a>
+    </div>
+  </div>
+{% endif %}
+
 {% if results|length == 0 %}
-  <div class="alert alert-warning">No matches found.</div>
+  <div class="alert alert-warning">{{ t("No matches found.") }}</div>
 {% else %}
   <div class="list-group shadow-sm">
     {% for r in results %}
-      <form class="list-group-item list-group-item-action d-flex gap-3 align-items-start" method="post" action="/records/add_from_discogs">
+      <form class="list-group-item list-group-item-action d-flex gap-3 align-items-start discogs-result-item" method="post" action="/records/add_from_discogs">
         <input type="hidden" name="release_id" value="{{ r.id }}">
         <img src="{{ r.cover_image }}" alt="" class="rounded" style="width:72px;height:72px;object-fit:cover;">
         <div class="flex-grow-1">
@@ -28,14 +51,47 @@
             {% if r.format %}{{ r.format|join(", ") }}{% endif %}
           </div>
           <div class="mt-2">
-            <textarea class="form-control form-control-sm" name="notes" rows="2" placeholder="Notes (condition, where stored, etc.) (optional)"></textarea>
+            <textarea class="form-control form-control-sm" name="notes" rows="2" placeholder="{{ t('Notes (condition, where stored, etc.) (optional)') }}"></textarea>
           </div>
         </div>
         <div class="ms-auto">
-          <button class="btn btn-primary btn-sm" type="submit">Add</button>
+          <button class="btn btn-primary btn-sm" type="submit">{{ t("Add") }}</button>
         </div>
       </form>
     {% endfor %}
   </div>
+{% endif %}
+
+{% if pager %}
+<script>
+(function(){
+  const KEY = 'vinylcat_discogs_results_filter';
+  const input = document.getElementById('resultsFilter');
+  const items = Array.from(document.querySelectorAll('.discogs-result-item'));
+  const count = document.getElementById('resultsCount');
+
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  function apply(){
+    const q = norm(input ? input.value : '');
+    let shown = 0;
+    for(const el of items){
+      const hay = norm(el.innerText);
+      const ok = !q || hay.includes(q);
+      el.classList.toggle('d-none', !ok);
+      if(ok) shown++;
+    }
+    if(count) count.textContent = `${shown}/${items.length}`;
+  }
+
+  if(!input) return;
+  const saved = localStorage.getItem(KEY);
+  if(saved) input.value = saved;
+  input.addEventListener('input', () => {
+    localStorage.setItem(KEY, input.value || '');
+    apply();
+  });
+  apply();
+})();
+</script>
 {% endif %}
 {% endblock %}

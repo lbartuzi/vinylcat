@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-9">
+    <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+      <div>
+        <h1 class="h4 mb-1">{{ t("Privacy & Cookie Policy") }}</h1>
+        <div class="text-secondary small">
+          {{ t("Effective date") }}: {{ effective_date or "2026-01-23" }}
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <p class="mb-3">
+          {{ t("This page explains what data we process when you use") }}
+          <strong>{{ app_name }}</strong>,
+          {{ t("why we process it, and how you can control analytics cookies.") }}
+        </p>
+
+        <h2 class="h6 mt-4">{{ t("1) Who is responsible?") }}</h2>
+        <p class="mb-2">
+          <strong>{{ t("Controller / website operator") }}:</strong>
+          {{ site_owner or "Bartuzi Solutions" }}<br>
+          <strong>{{ t("Contact") }}:</strong>
+          {% if privacy_email %}
+            <a href="mailto:{{ privacy_email }}">{{ privacy_email }}</a>
+          {% else %}
+            info@bartuzi-solutions.eu
+          {% endif %}
+        </p>
+
+        <h2 class="h6 mt-4">{{ t("2) What we collect") }}</h2>
+        <p class="mb-2">
+          {{ t("We collect two types of data:") }}
+        </p>
+        <ul class="mb-3">
+          <li>
+            <strong>{{ t("Account & app data (when you sign in)") }}</strong> — {{ t("data you enter into the app (e.g., records/collections) and your account details needed for the service.") }}
+          </li>
+          <li>
+            <strong>{{ t("Optional analytics (Google Analytics 4)") }}</strong> — {{ t("only if you accept analytics cookies, we measure usage to understand what pages/features are used and to improve the app.") }}
+          </li>
+        </ul>
+
+        <h2 class="h6 mt-4">{{ t("3) Analytics details (Google Analytics 4)") }}</h2>
+        <p class="mb-2">
+          {{ t("If you consent to analytics cookies, Google Analytics 4 (GA4) may collect:") }}
+        </p>
+        <ul class="mb-3">
+          <li>{{ t("Pages you view and actions like page_view events") }}</li>
+          <li>{{ t("Approximate location (e.g., country/city level)") }}</li>
+          <li>{{ t("Device and browser information (e.g., OS, browser, screen size, language)") }}</li>
+          <li>{{ t("Traffic source/referrer (how you arrived at the site)") }}</li>
+        </ul>
+
+        <p class="mb-2">
+          {{ t("GA4 uses first-party cookies to distinguish users and sessions (typical cookies include") }}
+          <code>_ga</code> {{ t("and") }} <code>_ga_&lt;container-id&gt;</code>.
+        </p>
+        <p class="mb-2">
+          {{ t("For EU traffic, GA4 states it does not log or store IP addresses and drops EU user IPs before logging via EU domains/servers.") }}
+        </p>
+
+        <div class="alert alert-secondary small mb-3">
+          <strong>{{ t("No advertising") }}:</strong>
+          {{ t("we’ve configured analytics to disable Google signals and ad personalization signals in our site tag.") }}
+        </div>
+
+        <h2 class="h6 mt-4">{{ t("4) Legal basis") }}</h2>
+        <p class="mb-2">
+          <strong>{{ t("Analytics cookies") }}</strong>
+          {{ t("are used only with your consent (opt-in). You can refuse analytics cookies and still use the site. Getting consent for non-essential cookies is generally required under EU cookie rules.") }}
+        </p>
+        <p class="mb-2">
+          {{ t("Google also requires site owners using Analytics cookies to inform users and obtain consent where required.") }}
+        </p>
+
+        <h2 class="h6 mt-4">{{ t("5) How to manage cookies") }}</h2>
+        <p class="mb-2">
+          {{ t("You can change your analytics cookie preference any time:") }}
+        </p>
+        <ul class="mb-3">
+          <li>
+            {{ t("Click Cookie settings in the footer (bottom of the page) to show the consent banner again.") }}
+          </li>
+          <li>
+            {{ t("Or clear site storage/cookies in your browser (this will reset your choice).") }}
+          </li>
+        </ul>
+
+        <h2 class="h6 mt-4">{{ t("6) How long we keep analytics data") }}</h2>
+        <p class="mb-2">
+          {{ t("Google Analytics retention depends on the GA4 property settings (commonly 2 or 14 months for user-level/event data, depending on configuration).") }}
+        </p>
+
+        <h2 class="h6 mt-4">{{ t("7) Sharing & international transfers") }}</h2>
+        <p class="mb-2">
+          {{ t("If enabled, analytics data is processed by Google as our service provider. Depending on Google’s processing, data may be handled outside the EU/EEA. (If this matters for your setup, review Google’s contractual and transfer safeguards and your DPA guidance.)") }}
+        </p>
+
+        <h2 class="h6 mt-4">{{ t("8) Your rights") }}</h2>
+        <p class="mb-2">
+          {{ t("Depending on your jurisdiction (including the EU), you may have rights to access, correct, delete, or restrict processing of your personal data, and to withdraw consent for analytics at any time (via Cookie settings).") }}
+        </p>
+
+        <hr class="my-4"/>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

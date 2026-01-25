@@ -1,10 +1,20 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-  <div class="text-truncate">
-    <div class="text-secondary small">{{ collection.name }}</div>
-    <h1 class="h4 mb-0 text-truncate">{{ record.artist or "Unknown artist" }} — {{ record.title or "Untitled" }}</h1>
-    <div class="text-secondary small">
+  <div class="min-w-0">
+    <div class="text-secondary small text-truncate">{{ collection.name }}</div>
+
+    {# Artist line #}
+    <h1 class="h4 mb-0 text-truncate">
+      {{ record.artist or t("Unknown artist") }}
+    </h1>
+
+    {# Title line #}
+    <div class="h5 mb-0 text-secondary text-truncate">
+      {{ record.title or t("Untitled") }}
+    </div>
+
+    <div class="text-secondary small text-truncate">
       {% if record.year %}{{ record.year }}{% endif %}
       {% if record.label %} · {{ record.label }}{% endif %}
       {% if record.catno %} · {{ record.catno }}{% endif %}
@@ -12,12 +22,13 @@
       {% if record.country %} · {{ record.country }}{% endif %}
     </div>
   </div>
-  <div class="d-flex gap-2">
-    <a class="btn btn-outline-secondary" href="/">Back</a>
+
+  <div class="d-flex gap-2 flex-shrink-0">
+    <a class="btn btn-outline-secondary" href="/">{{ t("Back") }}</a>
     {% if role != "viewer" %}
-      <a class="btn btn-outline-primary" href="/records/{{ record.id }}/edit">Edit</a>
-      <form method="post" action="/records/{{ record.id }}/delete" onsubmit="return confirm('Delete this record?');">
-        <button class="btn btn-outline-danger" type="submit">Delete</button>
+      <a class="btn btn-outline-primary" href="/records/{{ record.id }}/edit">{{ t("Edit") }}</a>
+      <form method="post" action="/records/{{ record.id }}/delete" onsubmit="return confirm('{{ t("Delete this record?") }}');">
+        <button class="btn btn-outline-danger" type="submit">{{ t("Delete") }}</button>
       </form>
     {% endif %}
   </div>
@@ -27,21 +38,21 @@
   <div class="col-12 col-lg-7">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="h6">Photos</h2>
+        <h2 class="h6">{{ t("Photos") }}</h2>
         {% if photos|length == 0 %}
-          <div class="text-secondary">No photos yet.</div>
+          <div class="text-secondary">{{ t("No photos yet.") }}</div>
         {% else %}
           <div class="row g-2">
             {% for p in photos %}
               <div class="col-6 col-md-4">
                 {% if p.kind == "upload" %}
-                  <a href="/uploads/{{ p.filename }}" target="_blank" class="d-block">
-                    <img class="img-fluid rounded shadow-sm" src="/uploads/{{ p.filename }}" alt="">
-                  </a>
+                  <a href="/uploads/{{ p.filename }}" class="d-block vc-photo-thumb" data-full="/uploads/{{ p.filename }}" data-idx="{{ loop.index0 }}">
+  <img class="img-fluid rounded shadow-sm" src="/uploads/{{ p.filename }}" alt="">
+</a>
                 {% else %}
-                  <a href="{{ p.url }}" target="_blank" class="d-block">
-                    <img class="img-fluid rounded shadow-sm" src="{{ p.url }}" alt="">
-                  </a>
+                  <a href="{{ p.url }}" class="d-block vc-photo-thumb" data-full="{{ p.url }}" data-idx="{{ loop.index0 }}">
+  <img class="img-fluid rounded shadow-sm" src="{{ p.url }}" alt="">
+</a>
                 {% endif %}
                 <div class="small text-secondary mt-1">{{ p.kind }}{% if p.label %} · {{ p.label }}{% endif %}</div>
               </div>
@@ -51,22 +62,22 @@
 
         {% if role != "viewer" %}
           <hr/>
-          <h3 class="h6">Upload your own photo</h3>
+          <h3 class="h6">{{ t("Upload your own photo") }}</h3>
           <form class="row g-2 align-items-end" method="post" action="/records/{{ record.id }}/upload_photo" enctype="multipart/form-data">
             <div class="col-12 col-md-4">
-              <label class="form-label">Label</label>
+              <label class="form-label">{{ t("Label") }}</label>
               <select class="form-select" name="label">
-                <option value="front">Front</option>
-                <option value="back">Back</option>
-                <option value="other" selected>Other</option>
+                <option value="front">{{ t("Front") }}</option>
+                <option value="back">{{ t("Back") }}</option>
+                <option value="other" selected>{{ t("Other") }}</option>
               </select>
             </div>
             <div class="col-12 col-md-6">
-              <label class="form-label">Photo</label>
+              <label class="form-label">{{ t("Photo") }}</label>
               <input class="form-control" type="file" name="photo" accept="image/*" required>
             </div>
             <div class="col-12 col-md-2">
-              <button class="btn btn-primary w-100" type="submit">Upload</button>
+              <button class="btn btn-primary w-100" type="submit">{{ t("Upload") }}</button>
             </div>
           </form>
         {% endif %}
@@ -77,9 +88,9 @@
   <div class="col-12 col-lg-5">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="h6">Tracklist</h2>
+        <h2 class="h6">{{ t("Tracklist") }}</h2>
         {% if tracklist|length == 0 %}
-          <div class="text-secondary">No tracklist available.</div>
+          <div class="text-secondary">{{ t("No tracklist available.") }}</div>
         {% else %}
           <ol class="mb-0">
             {% for t in tracklist %}
@@ -96,11 +107,96 @@
     {% if record.notes %}
     <div class="card shadow-sm mt-3">
       <div class="card-body">
-        <h2 class="h6">Notes</h2>
+        <h2 class="h6">{{ t("Notes") }}</h2>
         <div style="white-space: pre-wrap;">{{ record.notes }}</div>
       </div>
     </div>
     {% endif %}
   </div>
 </div>
+
+<!-- Photo Gallery Modal -->
+<div class="modal fade" id="vcGalleryModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ t("Gallery") }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ t("Close") }}"></button>
+      </div>
+      <div class="modal-body">
+        <div id="vcGalleryCarousel" class="carousel slide" data-bs-ride="false">
+          <div class="carousel-inner" id="vcGalleryInner">
+            <!-- injected -->
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#vcGalleryCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">{{ t("Previous") }}</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#vcGalleryCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">{{ t("Next") }}</span>
+          </button>
+        </div>
+        <div class="small text-secondary mt-2">
+          {{ t("Tip: Click the image to open it in a new tab.") }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const thumbs = Array.from(document.querySelectorAll('.vc-photo-thumb'));
+  if (!thumbs.length) return;
+
+  const modalEl = document.getElementById('vcGalleryModal');
+  const carouselEl = document.getElementById('vcGalleryCarousel');
+  const innerEl = document.getElementById('vcGalleryInner');
+  if (!modalEl || !carouselEl || !innerEl) return;
+
+  const urls = thumbs.map(a => a.getAttribute('data-full')).filter(Boolean);
+
+  function buildCarousel(activeIndex) {
+    innerEl.innerHTML = '';
+    urls.forEach((url, i) => {
+      const item = document.createElement('div');
+      item.className = 'carousel-item' + (i === activeIndex ? ' active' : '');
+
+      const wrap = document.createElement('div');
+      wrap.className = 'd-flex justify-content-center';
+
+      const img = document.createElement('img');
+      img.className = 'img-fluid rounded shadow-sm';
+      img.style.maxHeight = '75vh';
+      img.style.cursor = 'pointer';
+      img.src = url;
+      img.alt = '';
+
+      // Clicking the big image opens in a new tab (requested behavior)
+      img.addEventListener('click', () => {
+        window.open(url, '_blank', 'noopener');
+      });
+
+      wrap.appendChild(img);
+      item.appendChild(wrap);
+      innerEl.appendChild(item);
+    });
+
+    // Reset carousel to the chosen slide
+    const bsCarousel = bootstrap.Carousel.getInstance(carouselEl) || new bootstrap.Carousel(carouselEl, { interval: false, ride: false, wrap: true });
+    bsCarousel.to(activeIndex);
+  }
+
+  thumbs.forEach((a, idx) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      buildCarousel(idx);
+      const bsModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+      bsModal.show();
+    });
+  });
+})();
+</script>
+
 {% endblock %}

@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h1 class="h4 mb-0">Collections</h1>
+  <h1 class="h4 mb-0">{{ t("Collections") }}</h1>
 </div>
 
 <div class="row g-3">
   <div class="col-12 col-lg-7">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="h6">Your accessible collections</h2>
+        <h2 class="h6">{{ t("Your accessible collections") }}</h2>
 
         {% if collections|length == 0 %}
-          <div class="text-secondary">No collections yet.</div>
+          <div class="text-secondary">{{ t("No collections yet.") }}</div>
         {% else %}
           <div class="list-group">
             {% for c in collections %}
@@ -36,7 +36,7 @@
                   </form>
 
                   {% if c.owner_id == user.id %}
-                    <a class="btn btn-sm btn-outline-secondary no-row-select" href="/collections/{{ c.id }}/share">Share</a>
+                    <a class="btn btn-sm btn-outline-secondary no-row-select" href="/collections/{{ c.id }}/share">{{ t("Share") }}</a>
 
                     <button class="btn btn-sm btn-outline-secondary no-row-select" type="button"
                             data-bs-toggle="modal" data-bs-target="#renameCollection{{ c.id }}">
@@ -45,7 +45,7 @@
 
                     <form method="post" action="/collections/{{ c.id }}/delete" class="m-0">
                       <button class="btn btn-sm btn-outline-danger no-row-select" type="submit"
-                              onclick="return confirm('Delete this collection and ALL records in it?');">
+                              onclick="return confirm('{{ t("Delete this collection and ALL records in it?") }}');">
                         Delete
                       </button>
                     </form>
@@ -58,19 +58,19 @@
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title">Rename collection</h5>
+                        <h5 class="modal-title">{{ t("Rename collection") }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
 
                       <form method="post" action="/collections/{{ c.id }}/rename">
                         <div class="modal-body">
-                          <label class="form-label">Collection name</label>
+                          <label class="form-label">{{ t("Collection name") }}</label>
                           <input class="form-control" name="name" value="{{ c.name }}" maxlength="200" required>
-                          <div class="form-text">This only changes the name, not the records inside.</div>
+                          <div class="form-text">{{ t("This only changes the name, not the records inside.") }}</div>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                          <button type="submit" class="btn btn-primary">Save</button>
+                          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">{{ t("Cancel") }}</button>
+                          <button type="submit" class="btn btn-primary">{{ t("Save") }}</button>
                         </div>
                       </form>
 
@@ -119,10 +119,10 @@
   <div class="col-12 col-lg-5">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="h6">Create a new collection</h2>
+        <h2 class="h6">{{ t("Create a new collection") }}</h2>
         <form class="vstack gap-2" method="post" action="/collections/create">
           <input class="form-control" name="name" placeholder="e.g. Family Vinyl, Shop Inventory..." required>
-          <button class="btn btn-primary" type="submit">Create</button>
+          <button class="btn btn-primary" type="submit">{{ t("Create") }}</button>
         </form>
         <div class="small text-secondary mt-3">
           Tip: To share a collection, the other person must register first (by email).

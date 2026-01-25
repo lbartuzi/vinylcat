@@ -2,26 +2,26 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-between mb-3">
   <div>
-    <div class="text-secondary small">Sharing collection</div>
+    <div class="text-secondary small">{{ t("Sharing collection") }}</div>
     <h1 class="h4 mb-0">{{ collection.name }}</h1>
   </div>
-  <a class="btn btn-outline-secondary" href="/collections">Back</a>
+  <a class="btn btn-outline-secondary" href="/collections">{{ t("Back") }}</a>
 </div>
 
 <div class="row g-3">
   <div class="col-12 col-lg-6">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="h6">Add / update collaborator</h2>
+        <h2 class="h6">{{ t("Add / update collaborator") }}</h2>
         <form class="vstack gap-2" method="post" action="/collections/{{ collection.id }}/share/add">
-          <input class="form-control" type="email" name="email" placeholder="user@example.com" required>
+          <input class="form-control" type="email" name="email" placeholder="{{ t("user@example.com") }}" required>
           <select class="form-select" name="role">
-            <option value="editor" selected>Editor (add/edit)</option>
-            <option value="viewer">Viewer (read-only)</option>
+            <option value="editor" selected>{{ t("Editor (add/edit)") }}</option>
+            <option value="viewer">{{ t("Viewer (read-only)") }}</option>
           </select>
-          <button class="btn btn-primary" type="submit">Share</button>
+          <button class="btn btn-primary" type="submit">{{ t("Share") }}</button>
         </form>
-        <div class="small text-secondary mt-2">They must already have an account.</div>
+        <div class="small text-secondary mt-2">{{ t("They must already have an account.") }}</div>
       </div>
     </div>
   </div>
@@ -29,20 +29,20 @@
   <div class="col-12 col-lg-6">
     <div class="card shadow-sm">
       <div class="card-body">
-        <h2 class="h6">Current collaborators</h2>
+        <h2 class="h6">{{ t("Current collaborators") }}</h2>
         {% if shares|length == 0 %}
-          <div class="text-secondary">No collaborators yet.</div>
+          <div class="text-secondary">{{ t("No collaborators yet.") }}</div>
         {% else %}
           <div class="list-group">
             {% for s in shares %}
               <div class="list-group-item d-flex align-items-center justify-content-between">
                 <div class="text-truncate">
                   <div class="fw-semibold">{{ s.email }}</div>
-                  <div class="small text-secondary">{{ s.role }}</div>
+                  <div class="small text-secondary">{{ t("role." ~ s.role) }}</div>
                 </div>
                 <form method="post" action="/collections/{{ collection.id }}/share/remove">
                   <input type="hidden" name="share_id" value="{{ s.id }}">
-                  <button class="btn btn-sm btn-outline-danger">Remove</button>
+                  <button class="btn btn-sm btn-outline-danger">{{ t("Remove") }}</button>
                 </form>
               </div>
             {% endfor %}
